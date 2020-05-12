@@ -1,0 +1,12 @@
+11239380a336cd967c3eaf3535f66c30 *DESCRIPTION
+ee320e5a489393be4ea05222fe58b897 *NAMESPACE
+15adbd236463a94b120d2f53d8f61e8a *R/SBdecomp.R
+70f729d2aa5142a79f6aa06cd3ee2b02 *build/partial.rdb
+b2a670837b991dd5a6ce32e84b92dfea *data/petsdata.RData
+415ef6c983dfdf21161c0836269aea8b *man/Kern.FUN.Rd
+83e3a8fccab5fb0d827bb760e888f6e7 *man/SBdecomp-package.Rd
+32112c3a9d273321229acd38d8b662c0 *man/VTM.Rd
+a0d1bcea417dd9c10b22994c2863d1ef *man/bar.sbdecomp.Rd
+863a3f0b317ec7c09d8da3a58531f5bf *man/petsdata.Rd
+bbb1e165e22e096f6b1eed2d365ee735 *man/pred.smooth.Rd
+9683cc45b15a83eb93168fc22378872f *man/sbdecomp.Rd
