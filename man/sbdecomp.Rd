@@ -80,8 +80,10 @@ Details can be found in: Parast, L and Griffin, BA (2020). "Quantifying the Bias
 A list is returned:
  \item{delta.naive}{Estimated naive treatment effect}
  \item{p.value.delta.naive}{P-value for estimated naive treatment effect}
+ \item{conf.int.delta.naive}{95\% confidence interval for estimated naive treatment effect}
  \item{delta.fully.adjusted}{Estimated treatment effect after adjusting for all variables}
  \item{p.value.delta.fully.adjusted}{P-value for estimated treatment effect after adjusting for all variables}
+ \item{conf.int.delta.fully.adjusted}{95\% confidence interval for estimated treatment effect after adjusting for all variables}
   \item{B}{The proportion of the selection bias explained by each variable}
    \item{estimated.selection.bias}{The estimated selection bias, only if Bonly = FALSE}
     \item{lambda}{The defined selection bias movement when including/removing a variable, only if Bonly = FALSE}
@@ -97,7 +99,7 @@ A list is returned:
 }
 \references{
 %% ~put references to the literature/web site here ~
-Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates." Statistics in Medicine, In press.  
+Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates". Statistics in Medicine, 39(18): 2447- 2476.  
 }
 \author{
 Layla Parast

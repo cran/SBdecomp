@@ -79,6 +79,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 	if(sum(is.f.vec) > 0) {message(paste("The following variable(s) were identified as factors:", names.covariates[is.f.vec]))}
 	delta.naive = mean(outcome[treatment==1]) - mean(outcome[treatment==0])
 	p.value.delta.naive = t.test(outcome[treatment==1], outcome[treatment==0])$p.value
+	ci.delta.naive = as.vector(t.test(outcome[treatment==1], outcome[treatment==0])$conf.int)
 	great.16 = which(nchar(names.covariates) > 16)
 	if(length(great.16) > 0) {
 		for(tt in great.16) {
@@ -88,8 +89,11 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 		}
 	}
 	data.use = as.data.frame(cbind(outcome, treatment, confounders))
+	
+	if(!(estimation == "nonparametric" | estimation == "parametric"))    {stop("Estimation method must be either parametric or nonparametric.")}
+   	if(!(type == "removal" | type == "inclusion"))    {stop("Type must be either removal or inclusion.")}
 
-   	if(estimation == "nonparametric") {
+if(estimation == "nonparametric") {
    	ps.all=twang::ps(as.formula(paste("treatment ~", paste(names.covariates, collapse="+"))), data=data.use,
       n.trees = n.trees, interaction.depth = interaction.depth, verbose = verbose, estimand = "ATE",
       stop.method = stop.method, shrinkage = shrinkage, cv.folds=cv.folds)
@@ -99,6 +103,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 	  	design.ps <- svydesign(ids=~1, weights=~weights.np, data=data.use)
 		glm1 <- svyglm(outcome ~ treatment, design=design.ps)
 		p.value.delta.fully.adjusted = summary(glm1)$coef[2,4]
+		ci.delta.fully.adjusted = as.vector(confint(glm1)[2,])
       	lambda.all = delta.naive-delta.ps
 	  
 	  balance.naive.mean = mean(abs(twang::bal.table(ps.all)$unw$std.eff.sz))
@@ -107,7 +112,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 	  balance.fully.adjusted.max = max(abs(twang::bal.table(ps.all)$es.max.ATE$std.eff.sz))
 	  
 	  if(type == "removal")	{
-	  	message("Note: the nonparamteric estimation procedure is running; this procedure may be very time intensive (on the scale of several minutes to hours depending on the size of your dataset).")
+	  	message("Note: the nonparametric estimation procedure is running; this procedure may be very time intensive (on the scale of several minutes to hours depending on the size of your dataset).")
 		balance.ex.mean = vector(length = ncovariates)
 		balance.ex.max = vector(length = ncovariates)
 		lambda.each.ex.np = vector(length = ncovariates)
@@ -158,7 +163,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 		row.names(balance.ex.max) = "balance.max"
 		names(delta.each.ex.np) = names.covariates
 		row.names(delta.each.ex.np) = "delta"
-		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "B" = B.each.ex.np)
+		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "conf.int.delta.naive" = ci.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "conf.int.delta.fully.adjusted" = ci.delta.fully.adjusted, "B" = B.each.ex.np)
 		if(!Bonly) {
 			results = c(results,list("estimated.selection.bias" = lambda.all, "lambda" = lambda.each.ex.np, "delta.each" = delta.each.ex.np))
 		}
@@ -206,7 +211,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 		row.names(balance.in.max) = "balance.max"
 		names(delta.each.in.np) = names.covariates
 		row.names(delta.each.in.np) = "delta"
-		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "B" = B.each.in.np)
+		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "conf.int.delta.naive" = ci.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "conf.int.delta.fully.adjusted" = ci.delta.fully.adjusted, "B" = B.each.in.np)
 		if(!Bonly) {
 			results = c(results,list( "estimated.selection.bias" = lambda.all, "lambda" = lambda.each.in.np, delta.each = delta.each.in.np))
 		}
@@ -227,6 +232,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 	  	design.ps <- svydesign(ids=~1, weights=~weights.np, data=data.use)
 		glm1 <- svyglm(outcome ~ treatment, design=design.ps)
 		p.value.delta.fully.adjusted = summary(glm1)$coef[2,4]
+		ci.delta.fully.adjusted = as.vector(confint(glm1)[2,])
 
       lambda.all = delta.naive-delta.ps
 	  
@@ -279,7 +285,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 		row.names(balance.ex.max) = "balance.max"
 		names(delta.each.ex.np) = names.covariates
 		row.names(delta.each.ex.np) = "delta"
-		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "B" = B.each.ex.np)
+		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "conf.int.delta.naive" = ci.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "conf.int.delta.fully.adjusted" = ci.delta.fully.adjusted, "B" = B.each.ex.np)
 		if(!Bonly) {
 			results = c(results,list("estimated.selection.bias" = lambda.all, "lambda" = lambda.each.ex.np, "delta.each" = delta.each.ex.np))
 		}
@@ -328,7 +334,7 @@ sbdecomp = function(outcome, treatment, confounders, data = NULL, type = "inclus
 		names(delta.each.in.np) = names.covariates
 		row.names(delta.each.in.np) = "delta"
 		
-		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "B" = B.each.in.np)
+		results = list("delta.naive" = delta.naive, "p.value.delta.naive" = p.value.delta.naive, "conf.int.delta.naive" = ci.delta.naive, "delta.fully.adjusted" = delta.ps, "p.value.delta.fully.adjusted" = p.value.delta.fully.adjusted, "conf.int.delta.fully.adjusted" = ci.delta.fully.adjusted, "B" = B.each.in.np)
 		if(!Bonly) {
 			results = c(results,list( "estimated.selection.bias" = lambda.all, "lambda" = lambda.each.in.np, "delta.each" = delta.each.in.np))
 		}

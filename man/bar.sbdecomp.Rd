@@ -24,7 +24,7 @@ A bar plot showing the estimated proportions of the estimated selection bias exp
 }
 \references{
 %% ~put references to the literature/web site here ~
-Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates." Statistics in Medicine, In press. 
+Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates". Statistics in Medicine, 39(18): 2447- 2476. 
 }
 \author{
 Layla Parast

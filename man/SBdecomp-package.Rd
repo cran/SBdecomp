@@ -24,7 +24,7 @@ This packge provides a function that decomposes the estimated selection bias to 
 Maintainer: \packageMaintainer{SBdecomp}
 }
 \references{
-Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates." Statistics in Medicine, In press. 
+Parast, L and Griffin, BA (2020). "Quantifying the Bias due to Observed Individual Confounders in Causal Treatment Effect Estimates". Statistics in Medicine, 39(18): 2447- 2476.
 }
 
 \keyword{smooth}
